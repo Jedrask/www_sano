@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+  <% include head %>
+  </head>
+  <%  include menu %>
+  <body>
+<br><br><br><br><br><br>
+<% dzialy.forEach((dzial) => { %>
+  <div class="container" id="tablica"><h3><%= dzial %></h3>
+    <table class="table table-hover">
+     <thead class="thead-inverse">
+     <tr>
+       <th>Nazwisko i imię</th>
+       <th>Wew.</th>
+       <% if (dzial === 'Handel') { %>
+       <th>Wew. handel</th>
+       <% } %>
+       <th>Tel. Miejski</th>
+       <th>Tel. Komórkowy</th>
+       <th>Adres email</th>
+     </tr>
+     </thead>
+     <% telefony.filter((tab) => { return tab['Dział'] == dzial; }).forEach((el) => { %>
+     <tbody>
+        <td><%= el['Nazwisko i imię'] %></td>
+        <td><%= el['Wew'] %></td>
+        <% if (dzial === 'Handel') { %>
+        <td><%= el['Dodatkowe'] %></td>
+        <% } %>
+        <td><%= el['Tel. Miejski'] %></td>
+        <td><%= el['Tel. Komórkowy'] %></td>
+        <td><a href="mailto:<%= el['Adres e-mail'] %>"><%= el['Adres e-mail'] %></a></td>
+     </tbody>
+     <% }) %>
+    </table>
+ </div>
+<% }) %>
+  <footer class="page-footer container-fluid text-center">
+    <p>Copyright by Karabasz Software</p>
+  </footer>
+     <script type="text/javascript" src="/js/js_in.js"></script>
+  </body>
+</html>
