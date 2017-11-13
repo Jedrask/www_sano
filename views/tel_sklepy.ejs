@@ -7,8 +7,8 @@
   <body>
 <br><br><br><br><br><br>
 <% lokalizacje.forEach((lokalizacja) => { %>
-  <div class="container" id="tablica"><h3><%= lokalizacja %></h3>
-    <table class="table table-hover">
+<div class="container" onClick="showHide(<%= lokalizacja %>)"><h3><%= lokalizacja %></h3>
+  <table class="table table-hover" id=<%= lokalizacja %>>
      <thead class="thead-inverse">
      <tr>
        <th>Sklep</th>
