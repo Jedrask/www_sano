@@ -23,39 +23,63 @@ app.get('/', (req, res) => {
 app.get('/telefonySklepy', (req, res) => {
     fs.readFile(__dirname + '/data/telefony_sklepy.json', (err, data) => {
        if (err) return res.status(401).send(err);
-       
-       let telefony = JSON.parse(data.slice(data.indexOf('[')));
-       let lokalizacje = pobierzSlownik(telefony, 'Lokalizacja');
+
+
+       let telefony = parsujPlik(data);
+
+       if (telefony !== 'Error') {
+          let lokalizacje = pobierzSlownik(telefony, 'Lokalizacja');
+          res.render('tel_sklepy', { telefony, lokalizacje });
+       } else {
+         console.log(lokalizacje);
+         res.send('Bład parsowania pliku - sprawdź składnie');
+
   //     res.contentType('application/json');
-       res.render('tel_sklepy', { telefony, lokalizacje });
-       
+       };
     });
 });
 
 app.get('/telefonyBiuro', (req, res) => {
-  
+
   fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
      if (err) return res.status(401).send(err);
 
-     let telefony = JSON.parse(data.slice(data.indexOf('[')));
+     let telefony = parsujPlik(data);
+
+     if (telefony !== 'Error') {
      let dzialy = pobierzSlownik(telefony,'Dział');
      res.render('tel_biuro', { telefony, dzialy });
+     } else {
+       res.send('Bład parsowania pliku - sprawdź składnię');
+     };
   });
-//  res.render('index', { tel_biuro });
-
 });
 
-
+// Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
 function pobierzSlownik(telefony, wartosc) {
   let tmp = '';
-  let slownik = [];
+  let slownik = new Set();
   for (let el of telefony) {
-    if (el[wartosc] != tmp) {
-      slownik.push(tmp = el[wartosc]);
+    if (!slownik.has(el[wartosc])) {
+          slownik.add(el[wartosc]);
     }
   }
   return slownik;
 }
+
+// Parsowanie JSON w klauzuli try - catch na wypadek błędów logicznych w strukturze danych JSON
+function parsujPlik(data) {
+
+  try {
+    var telefony = JSON.parse(data.slice(data.indexOf('[')));
+  } catch(e) {
+    var telefony = 'Error';
+    console.log(e);
+    }
+
+  return telefony;
+
+};
 
 
 app.listen(3000);
