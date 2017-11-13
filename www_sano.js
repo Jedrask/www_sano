@@ -21,38 +21,41 @@ app.get('/', (req, res) => {
 });
 
 app.get('/telefonySklepy', (req, res) => {
-    fs.readFile(__dirname + '/data/Telefony_sklepy.pdf', (err, data) => {
-       if (err) {
-         res.status(401).send(err);
-       } else {
-         res.contentType('application/pdf');
-         res.send(data);
-       } 
+    fs.readFile(__dirname + '/data/telefony_sklepy.json', (err, data) => {
+       if (err) return res.status(401).send(err);
+       
+       let telefony = JSON.parse(data.slice(data.indexOf('[')));
+       let lokalizacje = pobierzSlownik(telefony, 'Lokalizacja');
+  //     res.contentType('application/json');
+       res.render('tel_sklepy', { telefony, lokalizacje });
+       
     });
 });
 
 app.get('/telefonyBiuro', (req, res) => {
   
-  fs.readFile(__dirname + '/data/telefony.json', (err, data) => {
+  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
      if (err) return res.status(401).send(err);
 
      let telefony = JSON.parse(data.slice(data.indexOf('[')));
-     let dzialy = pobierzDzialy(telefony);
+     let dzialy = pobierzSlownik(telefony,'Dział');
      res.render('tel_biuro', { telefony, dzialy });
   });
 //  res.render('index', { tel_biuro });
 
 });
 
-function pobierzDzialy(telefony) {
+
+function pobierzSlownik(telefony, wartosc) {
   let tmp = '';
-  let dzialy = [];
+  let slownik = [];
   for (let el of telefony) {
-    if (el['Dział'] != tmp) {
-      dzialy.push(tmp = el['Dział']);
+    if (el[wartosc] != tmp) {
+      slownik.push(tmp = el[wartosc]);
     }
   }
-  return dzialy;
+  return slownik;
 }
+
 
 app.listen(3000);

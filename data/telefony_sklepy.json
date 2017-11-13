@@ -1,0 +1,35 @@
+[
+  {
+    "Sklep":"Sano 1",
+    "Lokalizacja":"Koszalin",
+    "Adres":"ul. Zwycięstwa 190, 75-611",
+    "Telefony":[
+      "(94) 347 49 01",
+      "693 230 287"
+    ],
+    "Koordynator":"Monika Krauze",
+    "Kierownik":"Gort Beata"
+  },
+  {
+    "Sklep":"Sano 2",
+    "Lokalizacja":"Koszalin",
+    "Adres":"ul. Zwycięstwa 148, 75-604",
+    "Telefony":[
+      "(94) 342 76 77",
+      "693 230 345"
+    ],
+    "Koordynator":"Monika Krauze",
+    "Kierownik":"Jaroszyńska Katarzyna"
+  },
+  {
+    "Sklep":"Sano 3",
+    "Lokalizacja":"Koszalin",
+    "Adres":"ul. Tatarkiewicza 2A, 75-351",
+    "Telefony":[
+      "(94) 347 49 03",
+      "693 230 356"
+    ],
+    "Koordynator":"Monika Krauze",
+    "Kierownik":"Lorbiecka Katarzyna"
+  }
+]

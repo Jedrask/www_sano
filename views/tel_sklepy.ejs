@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+  <% include head %>
+  </head>
+  <%  include menu %>
+  <body>
+<br><br><br><br><br><br>
+<% lokalizacje.forEach((lokalizacja) => { %>
+  <div class="container" id="tablica"><h3><%= lokalizacja %></h3>
+    <table class="table table-hover">
+     <thead class="thead-inverse">
+     <tr>
+       <th>Sklep</th>
+       <th>Adres</th>
+       <th>Telefony</th>
+       <th>Kierownik</th>
+       <th>Koordynator</th>
+     </tr>
+     </thead>
+     <% telefony.filter((tab) => { return tab['Lokalizacja'] == lokalizacja; }).forEach((el) => { %>
+     <tbody>
+        <td><%= el['Sklep'] %></td>
+        <td><%= el['Adres'] %></td>
+        <td>
+          <% el['Telefony'].forEach((tel) => { %>
+            <%= tel %><br>
+          <% }) %>
+        </td>
+        <td><%= el['Kierownik'] %></td>
+        <td><%= el['Koordynator'] %></td>
+     </tbody>
+     <% }) %>
+    </table>
+ </div>
+<% }) %>
+  <footer class="page-footer container-fluid text-center">
+    <p>Copyright by Karabasz Software</p>
+  </footer>
+     <script type="text/javascript" src="/js/js_in.js"></script>
+  </body>
+</html>
