@@ -21,38 +21,65 @@ app.get('/', (req, res) => {
 });
 
 app.get('/telefonySklepy', (req, res) => {
-    fs.readFile(__dirname + '/data/Telefony_sklepy.pdf', (err, data) => {
-       if (err) {
-         res.status(401).send(err);
+    fs.readFile(__dirname + '/data/telefony_sklepy.json', (err, data) => {
+       if (err) return res.status(401).send(err);
+
+
+       let telefony = parsujPlik(data);
+
+       if (telefony !== 'Error') {
+          let lokalizacje = pobierzSlownik(telefony, 'Lokalizacja');
+          res.render('tel_sklepy', { telefony, lokalizacje });
        } else {
-         res.contentType('application/pdf');
-         res.send(data);
-       } 
+         console.log(lokalizacje);
+         res.send('Bład parsowania pliku - sprawdź składnie');
+
+  //     res.contentType('application/json');
+       };
     });
 });
 
 app.get('/telefonyBiuro', (req, res) => {
-  
-  fs.readFile(__dirname + '/data/telefony.json', (err, data) => {
+
+  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
      if (err) return res.status(401).send(err);
 
-     let telefony = JSON.parse(data.slice(data.indexOf('[')));
-     let dzialy = pobierzDzialy(telefony);
-     res.render('tel_biuro', { telefony, dzialy });
-  });
-//  res.render('index', { tel_biuro });
+     let telefony = parsujPlik(data);
 
+     if (telefony !== 'Error') {
+     let dzialy = pobierzSlownik(telefony,'Dział');
+     res.render('tel_biuro', { telefony, dzialy });
+     } else {
+       res.send('Bład parsowania pliku - sprawdź składnię');
+     };
+  });
 });
 
-function pobierzDzialy(telefony) {
+// Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
+function pobierzSlownik(telefony, wartosc) {
   let tmp = '';
-  let dzialy = [];
+  let slownik = new Set();
   for (let el of telefony) {
-    if (el['Dział'] != tmp) {
-      dzialy.push(tmp = el['Dział']);
+    if (!slownik.has(el[wartosc])) {
+          slownik.add(el[wartosc]);
     }
   }
-  return dzialy;
+  return slownik;
 }
+
+// Parsowanie JSON w klauzuli try - catch na wypadek błędów logicznych w strukturze danych JSON
+function parsujPlik(data) {
+
+  try {
+    var telefony = JSON.parse(data.slice(data.indexOf('[')));
+  } catch(e) {
+    var telefony = 'Error';
+    console.log(e);
+    }
+
+  return telefony;
+
+};
+
 
 app.listen(3000);
