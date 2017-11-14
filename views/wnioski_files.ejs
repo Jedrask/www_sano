@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pl">
+ <head>
+  <% include head %>
+ </head>
+  <% include menu %>
+ <body>
+   <div class="container" style="margin-top: 150px">
+    <h1>Wnioski</h1>
+    <ul class="list-group">
+    <% files.forEach((file) => { %>
+    <li class="list-group-item"><a href=<%= `/dokumenty/wnioski/${file}` %>><%= file %></a></li>
+    <% }) %>
+    </ul>
+  </div>
+ </body>
+  <footer class="page-footer container-fluid text-center">
+    <p>Copyright by Karabasz Software</p>
+  </footer>
+     <script type="text/javascript" src="/js/js_in.js"></script>
+</html>

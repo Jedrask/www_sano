@@ -55,6 +55,24 @@ app.get('/telefonyBiuro', (req, res) => {
   });
 });
 
+app.get('/dokumenty', (req, res) => {
+    res.render('main_files')
+});
+
+// Wyświetlamlistę dokumentów do pobrania w zależności od kategorii dokumentu jaka zostanie wybrana
+app.get('/dokumenty/:id', (req, res) => {
+  
+  let path = req.params.id;
+  fs.readdir(__dirname + '/public/dokumenty/' + path + '/', (err, files) => {
+    if (err) {
+      res.status(400).send('Problem z odczytaniem listy plików');
+    } else {
+      res.render('dokumenty', { files, path });
+    }
+  });
+  
+});
+
 // Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
 function pobierzSlownik(telefony, wartosc) {
   let tmp = '';
