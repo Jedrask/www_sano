@@ -3,11 +3,18 @@
   <head>
   <% include head %>
   </head>
-  <%  include menu %>
+  <% include menu %>
   <body>
-<br><br><br><br><br><br>
-<% dzialy.forEach((dzial) => { %>
-  <div class="container" id="tablica"><h3><%= dzial %></h3>
+  <div class="container-fluid" style="margin-top: 140px">
+  <div class="row content">
+    <div class="col-sm-3 sidenav" style="position: fixed; padding-right: 120px">
+        <% dzialy.forEach((dzial) => { %>
+        <a href="#<%= `${dzial}` %>" ><%= dzial %></a><br>
+        <% }) %>
+    </div>
+  <div class="col-sm-9" style="margin-left: 220px">
+  <% dzialy.forEach((dzial) => { %>
+  <div class="container-fluid" id="<%= `${dzial}` %>" ><h3><%= dzial %></h3>
     <table class="table table-hover">
      <thead class="thead-inverse">
      <tr>
@@ -36,6 +43,9 @@
     </table>
  </div>
 <% }) %>
+</div>
+<div>
+</div>
   <footer class="page-footer container-fluid text-center">
     <p>Copyright by Karabasz Software</p>
   </footer>
