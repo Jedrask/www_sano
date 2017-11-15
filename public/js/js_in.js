@@ -14,13 +14,6 @@ function onLogo() {
   alert("To jest SANO :)");
 }
 
-function showHide(id) {
-  if (id.style.display === 'none') {
-    id.style.display = 'block';
-  } else {
-    id.style.display = 'none';
-  }
-}
 
 var logo = document.getElementById("logo_sano");
 logo.addEventListener("click", onLogo);

@@ -6,6 +6,10 @@ const compression = require('compression');
 
 const jwt = require('./source/auth');
 
+const { request } = require('./source/request');
+
+const uri = 'https://api.darksky.net/forecast/6293f1582af50d6ff62190dc65b06607/54.1943800,16.1722200?units=si&lang=pl';
+ 
 app.disable('x-powered-by');
 
 app.use(compression());
@@ -17,7 +21,12 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-   res.render('index');
+   request(uri).then((data) => {
+     let pogoda = JSON.parse(data);
+     res.render('index', { pogoda });
+   }, (e) => {
+     let pogoda = { Błąd: 'Brak pogody'};
+   });
 });
 
 app.get('/telefonySklepy', (req, res) => {

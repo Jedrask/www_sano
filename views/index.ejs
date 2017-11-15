@@ -5,10 +5,19 @@
      </head>
      <body>
      <% include menu %>
-     <br><br><br><br><br>
-     <div class="container">
+     <div class="container" style="margin-top: 140px">
         <div class="jumbotron">
-          <h1>Strona komunikacyjna SANO</h1>
+          <h1>Pogoda</h1>
+          <p>Obecnie: <%= pogoda.currently.summary %>, 
+             temperatura <%= pogoda.currently.temperature %>,
+             temperatura odczuwalna <%= pogoda.currently.apparentTemperature %>,
+             ciśnienie <%= pogoda.currently.pressure %>,
+             witatr <%= pogoda.currently.windSpeed %> [m/s],
+             w porywach do <%= pogoda.currently.windGust %> [m/s],
+             wilgotność <%= pogoda.currently.humidity * 100 %> %
+          </p>
+          <p>Jutro: <%= pogoda.hourly.summary %></p>
+          <p>Najbliższe dni: <%= pogoda.daily.summary %></p>
         </div>
      </div>
      <script type="text/javascript" src="js/js_in.js"></script>
