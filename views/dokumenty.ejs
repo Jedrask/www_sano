@@ -6,10 +6,10 @@
   <% include menu %>
  <body>
    <div class="container" style="margin-top: 150px">
-    <h1>Różne</h1>
+     <h1><%= path %></h1>
     <ul class="list-group">
     <% files.forEach((file) => { %>
-    <li class="list-group-item"><a href=<%= `/dokumenty/${path}/${file}` %>><%= file %></a></li>
+    <li class="list-group-item"><a href=<%= `/dokumenty/${path}/${file}` %>><%= file.replace(/_/g,' ') %></a></li>
     <% }) %>
       </ul>
   </div>
