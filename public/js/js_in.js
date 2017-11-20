@@ -14,6 +14,5 @@ function onLogo() {
   alert("To jest SANO :)");
 }
 
-
 var logo = document.getElementById("logo_sano");
 logo.addEventListener("click", onLogo);

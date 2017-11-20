@@ -25,7 +25,11 @@
        <% } %>
        <th>Tel. Miejski</th>
        <th>Tel. Komórkowy</th>
-       <th>Adres email</th>
+       <% if (mod['mod'] === false) { %>
+         <th>Adres email</th>
+       <% } else { %>
+         <th>Wybierz opcję</th>
+       <% } %>
      </tr>
      </thead>
      <% telefony.filter((tab) => { return tab['Dział'] == dzial; }).forEach((el) => { %>
@@ -37,7 +41,15 @@
         <% } %>
         <td><%= el['Tel. Miejski'] %></td>
         <td><%= el['Tel. Komórkowy'] %></td>
+        <% if (mod['mod'] === false) { %>
         <td><a href="mailto:<%= el['Adres e-mail'] %>"><%= el['Adres e-mail'] %></a></td>
+        <% } %>
+        <% if (mod['mod'] === true) { %>
+           <td>
+             <a href="/Modbiuro/<%= el['Nazwisko i imię'] %>">Popraw</a> | 
+             <a href="/Delbiuro/<%= telefony.findIndex(x => x['Nazwisko i imię'] === el['Nazwisko i imię']) %>" onclick="return confirm('Czy jesteś pewien!?')">Usuń!</a>
+           </td>
+        <% } %>
      </tbody>
      <% }) %>
     </table>

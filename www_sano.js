@@ -14,8 +14,8 @@ app.disable('x-powered-by');
 
 app.use(compression());
 app.use(express.static(__dirname + '/public'));
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded( { extended: true } ));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded( { extended: true } ));
 //app.use(jwt);
 
 app.set('view engine', 'ejs');
@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
      res.render('index', { pogoda });
    }, (e) => {
      let pogoda = { Błąd: 'Brak pogody'};
+     res.render('index', { pogoda });
    });
 });
 
@@ -54,10 +55,10 @@ app.get('/telefonyBiuro', (req, res) => {
      if (err) return res.status(401).send(err);
 
      let telefony = parsujPlik(data);
-
+     let mod = { mod: false };
      if (telefony !== 'Error') {
      let dzialy = pobierzSlownik(telefony,'Dział');
-     res.render('tel_biuro', { telefony, dzialy });
+     res.render('tel_biuro', { telefony, dzialy, mod});
      } else {
        res.send('Bład parsowania pliku - sprawdź składnię');
      };
@@ -80,6 +81,70 @@ app.get('/dokumenty/:id', (req, res) => {
     }
   });
   
+});
+
+
+app.get('/modbiuro', (req, res) => {
+
+  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
+     if (err) return res.status(401).send(err);
+
+     let telefony = parsujPlik(data);
+
+     if (telefony !== 'Error') {
+     let dzialy = pobierzSlownik(telefony,'Dział');
+     let mod ={mod: true};
+     res.render('tel_biuro', { telefony, dzialy, mod });
+     } else {
+       res.send('Bład parsowania pliku - sprawdź składnię');
+     };
+  });
+});
+
+app.get('/Modbiuro/:name', (req, res) => {
+
+ fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
+     if (err) return res.status(401).send(err);
+
+     let telefony = parsujPlik(data);
+
+     if (telefony !== 'Error') {
+       let index = telefony.findIndex(x => x['Nazwisko i imię'] === (req.params.name));
+       if (index < 0 ) {
+         return res.status(400).send('Błąd przy szukaniu: ' + req.params.name);
+       }
+       let dane = telefony[index];
+       dane.index = index;
+       res.render('telBiuroForm', { dane });
+     } else {
+       res.send('Bład parsowania pliku - sprawdź składnię');
+     };
+  });
+});
+
+app.post('/telBiuroUpdate', (req, res) => {
+//   res.send(req.body['Dział']);
+  res.redirect('/modbiuro');
+});
+
+app.get('/Delbiuro/:id', (req, res) => {
+
+  if (req.params.id < 0) {
+    return res.status(400).send('Nie ma takiego indeksu: ' + req.params.id);
+  }
+  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
+     if (err) return res.status(401).send(err);
+
+     let telefony = parsujPlik(data);
+
+     if (telefony !== 'Error') {
+       res.send(telefony[req.params.id]);
+     } else {
+       res.send('Bład parsowania pliku - sprawdź składnię');
+     };
+  });
+
+
 });
 
 // Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
