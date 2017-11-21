@@ -2,13 +2,19 @@
 <html lang="pl">
      <head>
      <% include head %>
+     <style>
+       input[type=text] {width: 400px;}
+       table { width: 600px; }
+       td { padding-bottom: 20px; }
+     </style>
      </head>
      <body>
      <% include menu %>
-     <div class="container" style="margin-top: 140px">
+     <div class="container" >
         <div class="jumbotron">
-          <form action="/telBiuroUpdate" method="post">
+          <form action="/telBiuroUpdate" method="post" >
             <table>
+              <tr><td><input type="text" style="display:none" name="index" value="<%= dane['index'] %>"></td>
               <tr>
                 <td>Nazwisko i Imię:</td>
                 <td><input type="text" name="Nazwisko i imię" value="<%= dane['Nazwisko i imię'] %>"></td>

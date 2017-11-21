@@ -124,7 +124,26 @@ app.get('/Modbiuro/:name', (req, res) => {
 
 app.post('/telBiuroUpdate', (req, res) => {
 //   res.send(req.body['Dział']);
-  res.redirect('/modbiuro');
+  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
+    if (err) return res.status(401).send(err);
+
+    let telefony = parsujPlik(data);
+    let index = req.body['index'];
+    delete req.body.index;
+    telefony[index] = req.body;
+    let save = JSON.stringify(telefony);
+    if(telefony !== 'Error') {
+      fs.writeFile(__dirname + '/data/telefony_biuro.json', save, (err) => {
+        if (!err) {
+          res.redirect('/modbiuro');
+        } else {
+          res.send('change not saved!');
+        }
+      });
+    } else {
+      res.send('Błąd parsowania pliku - sprawdź składnię');
+    }
+  });
 });
 
 app.get('/Delbiuro/:id', (req, res) => {
