@@ -30,39 +30,23 @@ app.get('/', (req, res) => {
    });
 });
 
-app.get('/telefonySklepy', (req, res) => {
-    fs.readFile(__dirname + '/data/telefony_sklepy.json', (err, data) => {
-       if (err) return res.status(401).send(err);
+app.get('/telefonySklepy', czytajPlik('telefony_sklepy.json', 'Lokalizacja'), (req, res) => {
 
-
-       let telefony = parsujPlik(data);
-
-       if (telefony !== 'Error') {
-          let lokalizacje = pobierzSlownik(telefony, 'Lokalizacja');
-          res.render('tel_sklepy', { telefony, lokalizacje });
-       } else {
-         console.log(lokalizacje);
-         res.send('Bład parsowania pliku - sprawdź składnie');
-
-  //     res.contentType('application/json');
-       };
-    });
+  if (req.slownik) {
+    res.render('tel_sklepy', { telefony: req.telefony, lokalizacje: req.slownik });
+  } else {
+     res.send(req.telefony);
+  };
 });
 
-app.get('/telefonyBiuro', (req, res) => {
+app.get('/telefonyBiuro', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
 
-  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
-     if (err) return res.status(401).send(err);
-
-     let telefony = parsujPlik(data);
      let mod = { mod: false };
-     if (telefony !== 'Error') {
-     let dzialy = pobierzSlownik(telefony,'Dział');
-     res.render('tel_biuro', { telefony, dzialy, mod});
+     if (req.slownik) {
+       res.render('tel_biuro', { telefony: req.telefony, dzialy: req.slownik, mod});
      } else {
-       res.send('Bład parsowania pliku - sprawdź składnię');
+       res.send(req.telefony);
      };
-  });
 });
 
 app.get('/dokumenty', (req, res) => {
@@ -71,7 +55,7 @@ app.get('/dokumenty', (req, res) => {
 
 // Wyświetlamlistę dokumentów do pobrania w zależności od kategorii dokumentu jaka zostanie wybrana
 app.get('/dokumenty/:id', (req, res) => {
-  
+
   let path = req.params.id;
   fs.readdir(__dirname + '/public/dokumenty/' + path + '/', (err, files) => {
     if (err) {
@@ -80,71 +64,47 @@ app.get('/dokumenty/:id', (req, res) => {
       res.render('dokumenty', { files, path });
     }
   });
-  
 });
 
 
-app.get('/modbiuro', (req, res) => {
+app.get('/modbiuro', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
 
-  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
-     if (err) return res.status(401).send(err);
-
-     let telefony = parsujPlik(data);
-
-     if (telefony !== 'Error') {
-     let dzialy = pobierzSlownik(telefony,'Dział');
+     if (req.slownik) {
      let mod ={mod: true};
-     res.render('tel_biuro', { telefony, dzialy, mod });
+     res.render('tel_biuro', { telefony: req.telefony, dzialy: req.slownik, mod });
      } else {
-       res.send('Bład parsowania pliku - sprawdź składnię');
+       res.send(req.telefony);
      };
-  });
 });
 
-app.get('/Modbiuro/:name', (req, res) => {
 
- fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
-     if (err) return res.status(401).send(err);
+app.get('/Modbiuro/:name', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
 
-     let telefony = parsujPlik(data);
-
-     if (telefony !== 'Error') {
-       let index = telefony.findIndex(x => x['Nazwisko i imię'] === (req.params.name));
+       let index = req.telefony.findIndex(x => x['Nazwisko i imię'] === (req.params.name));
        if (index < 0 ) {
          return res.status(400).send('Błąd przy szukaniu: ' + req.params.name);
        }
-       let dane = telefony[index];
+       let dane = req.telefony[index];
        dane.index = index;
        res.render('telBiuroForm', { dane });
-     } else {
-       res.send('Bład parsowania pliku - sprawdź składnię');
-     };
-  });
 });
 
-app.post('/telBiuroUpdate', (req, res) => {
-//   res.send(req.body['Dział']);
-  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
-    if (err) return res.status(401).send(err);
 
-    let telefony = parsujPlik(data);
+app.post('/telBiuroUpdate', czytajPlik('telefony_biuro.json'), (req, res) => {
+
     let index = req.body['index'];
     delete req.body.index;
-    telefony[index] = req.body;
-    let save = JSON.stringify(telefony);
-    if(telefony !== 'Error') {
-      fs.writeFile(__dirname + '/data/telefony_biuro.json', save, (err) => {
-        if (!err) {
-          res.redirect('/modbiuro');
-        } else {
-          res.send('change not saved!');
-        }
-      });
-    } else {
-      res.send('Błąd parsowania pliku - sprawdź składnię');
-    }
-  });
+    req.telefony[index] = req.body;
+    let save = JSON.stringify(req.telefony);
+    fs.writeFile(__dirname + '/data/telefony_biuro.json', save, (err) => {
+      if (!err) {
+        res.redirect('/modbiuro');
+      } else {
+        res.send('change not saved!');
+      }
+    });
 });
+
 
 app.get('/Delbiuro/:id', (req, res) => {
 
@@ -192,5 +152,28 @@ function parsujPlik(data) {
 
 };
 
+//Middlware do czytania plikow z telefonami oraz budowania słownika wg lokalizacji lub działu
+function czytajPlik(plik, parametr) {
+
+    return function(req, res, next) {
+
+    fs.readFile(__dirname + '/data/' + plik, (err, data) => {
+       if (err) return res.status(401).send(err);
+
+
+       req.telefony = parsujPlik(data);
+
+       if (req.telefony !== 'Error') {
+         if (parametr) {
+            req.slownik = pobierzSlownik(req.telefony, parametr);
+         }
+         next();
+       } else {
+          req.telefony = 'Bład parsowania pliku - sprawdź składnie';
+          next();
+       };
+    });
+   };
+};
 
 app.listen(3000);
