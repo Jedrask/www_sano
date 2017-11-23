@@ -9,7 +9,9 @@ const jwt = require('./source/auth');
 const { request } = require('./source/request');
 
 const uri = 'https://api.darksky.net/forecast/6293f1582af50d6ff62190dc65b06607/54.1943800,16.1722200?units=si&lang=pl';
- 
+const sklepy = 'telefony_sklepy.json';
+const biuro = 'telefony_biuro.json'
+
 app.disable('x-powered-by');
 
 app.use(compression());
@@ -30,7 +32,7 @@ app.get('/', (req, res) => {
    });
 });
 
-app.get('/telefonySklepy', czytajPlik('telefony_sklepy.json', 'Lokalizacja'), (req, res) => {
+app.get('/telefonySklepy', czytajPlik(sklepy, 'Lokalizacja'), (req, res) => {
 
   if (req.slownik) {
     res.render('tel_sklepy', { telefony: req.telefony, lokalizacje: req.slownik });
@@ -39,7 +41,7 @@ app.get('/telefonySklepy', czytajPlik('telefony_sklepy.json', 'Lokalizacja'), (r
   };
 });
 
-app.get('/telefonyBiuro', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
+app.get('/telefonyBiuro', czytajPlik(biuro, 'Dział'), (req, res) => {
 
      let mod = { mod: false };
      if (req.slownik) {
@@ -66,8 +68,8 @@ app.get('/dokumenty/:id', (req, res) => {
   });
 });
 
-
-app.get('/modbiuro', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
+// routing dla wyświetlenie strony z linkami do POPRAW | USUŃ
+app.get('/modbiuro', czytajPlik(biuro, 'Dział'), (req, res) => {
 
      if (req.slownik) {
      let mod ={mod: true};
@@ -77,8 +79,8 @@ app.get('/modbiuro', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => 
      };
 });
 
-
-app.get('/Modbiuro/:name', czytajPlik('telefony_biuro.json', 'Dział'), (req, res) => {
+// routing do wyświetlenia strony z wypełnionym formularzem do POPRAWY danych
+app.get('/Modbiuro/:name', czytajPlik(biuro, 'Dział'), (req, res) => {
 
        let index = req.telefony.findIndex(x => x['Nazwisko i imię'] === (req.params.name));
        if (index < 0 ) {
@@ -86,17 +88,19 @@ app.get('/Modbiuro/:name', czytajPlik('telefony_biuro.json', 'Dział'), (req, re
        }
        let dane = req.telefony[index];
        dane.index = index;
-       res.render('telBiuroForm', { dane });
+
+       let route = '/telBiuroUpdate';
+       res.render('telBiuroForm', { dane, route });
 });
 
-
-app.post('/telBiuroUpdate', czytajPlik('telefony_biuro.json'), (req, res) => {
+// routing wołany z formularza do poprawienia danych, zapisania na dysk i przekierowania do strony z linkami POPRAW | USUŃ
+app.post('/telBiuroUpdate', czytajPlik(biuro), (req, res) => {
 
     let index = req.body['index'];
     delete req.body.index;
     req.telefony[index] = req.body;
     let save = JSON.stringify(req.telefony);
-    fs.writeFile(__dirname + '/data/telefony_biuro.json', save, (err) => {
+    fs.writeFile(__dirname + '/data/' + biuro, save, (err) => {
       if (!err) {
         res.redirect('/modbiuro');
       } else {
@@ -105,25 +109,47 @@ app.post('/telBiuroUpdate', czytajPlik('telefony_biuro.json'), (req, res) => {
     });
 });
 
-
-app.get('/Delbiuro/:id', (req, res) => {
+// routing do usunięcia danych, zapisania na dysku o przekierowaniu do strony z linkami POPRAW | USUŃ
+app.get('/Delbiuro/:id', czytajPlik(biuro), (req, res) => {
 
   if (req.params.id < 0) {
     return res.status(400).send('Nie ma takiego indeksu: ' + req.params.id);
   }
-  fs.readFile(__dirname + '/data/telefony_biuro.json', (err, data) => {
-     if (err) return res.status(401).send(err);
 
-     let telefony = parsujPlik(data);
+    let tel2 = req.telefony.filter((x) => {
+      return x != req.telefony[req.params.id];
+    });
 
-     if (telefony !== 'Error') {
-       res.send(telefony[req.params.id]);
-     } else {
-       res.send('Bład parsowania pliku - sprawdź składnię');
-     };
+    fs.writeFile(__dirname + '/data/' + biuro, JSON.stringify(tel2), (err) => {
+      if (!err) {
+        res.redirect('/modbiuro');
+      } else {
+        res.send('change not saved');
+      }
+    });
+});
+
+
+app.get('/addBiuro', (req, res) => {
+
+       let route = '/telBiuroAdd';
+       res.render('telBiuroForm', { dane:{}, route });
+});
+
+
+app.post('/telBiuroAdd', czytajPlik(biuro), (req, res) => {
+
+  if (req.body['Nazwisko i imię'] ==='') {
+    return res.send('Nazwisko i imię musi być wypełnione');
+  }
+  req.telefony.push(req.body);
+  fs.writeFile(__dirname + '/data/' + biuro, JSON.stringify(req.telefony), (err) => {
+    if (!err) {
+      res.redirect('/modbiuro');
+    } else {
+      res.send('Add not saved');
+    }
   });
-
-
 });
 
 // Pobiera dane słownikowe potrzebne w czasie generowania strony HTML

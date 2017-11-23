@@ -12,7 +12,7 @@
      <% include menu %>
      <div class="container" >
         <div class="jumbotron">
-          <form action="/telBiuroUpdate" method="post" >
+          <form action="<%= route %>" method="post" >
             <table>
               <tr><td><input type="text" style="display:none" name="index" value="<%= dane['index'] %>"></td>
               <tr>
