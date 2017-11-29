@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pl">
+     <head>
+     <% include head %>
+     <style>
+       input[type=text] {width: 400px;}
+       table { width: 600px; }
+       td { padding-bottom: 20px; }
+     </style>
+     </head>
+     <body>
+     <% include menu %>
+     <div class="container" >
+        <div class="jumbotron">
+          <form action="<%= route %>" method="post"><h3>Zmiana Kierownika</h3><br>
+            <input type="text" name="kierownik" value="<%= dane['Kierownik'] %>"><br><br>
+            <input type="submit" value="Zatwierdź">
+          </form>
+       </div>
+     </div>
+     </body>
+</html>
