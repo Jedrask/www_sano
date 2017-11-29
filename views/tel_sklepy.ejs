@@ -7,54 +7,52 @@
   <body>
 
 <div class="container-fluid" >
-<div class="row content">
-  <div class="col-sm-3 sidenav" style="position: fixed; padding-right: 120px">
+  <div class="row content">
+    <div class="col-sm-3 sidenav" style="position: fixed; padding-right: 120px">
+      <% lokalizacje.forEach((lokalizacja) => { %>
+      <a href="#<%= `${lokalizacja}` %>" ><%= lokalizacja %></a><br>
+      <% }) %>
+    </div>
+
+   <div class="col-sm-9" style="margin-left: 220px">
+
     <% lokalizacje.forEach((lokalizacja) => { %>
-    <a href="#<%= `${lokalizacja}` %>" ><%= lokalizacja %></a><br>
+    <div class="container-fluid" ><h3><%= lokalizacja %></span></h3>
+      <table class="table table-hover" id=<%= lokalizacja %>>
+       <thead class="thead-inverse">
+         <tr>
+           <th>Sklep</th>
+           <th>Adres</th>
+           <th>Telefony</th>
+           <th>Kierownik</th>
+           <th>Koordynator</th>
+         </tr>
+       </thead>
+       <% telefony.filter((tab) => { return tab['Lokalizacja'] == lokalizacja; }).forEach((el) => { %>
+       <tbody>
+           <td><%= el['Sklep'] %></td>
+           <td><%= el['Adres'] %></td>
+           <td>
+             <% el['Telefony'].forEach((tel) => { %>
+               <%= tel %><br>
+             <% }) %>
+           </td>
+           <td><%= el['Kierownik'] %></td>
+           <td><%= el['Koordynator'] %></td>
+           <% if (mod['mod'] === true) { %>
+             <td>
+               <a href="/modsklep/<%= el['Kierownik'] %>">Popraw</a>
+             </td>
+           <% } %>
+       </tbody>
+       <% }) %>
+      </table>
+    </div>
     <% }) %>
+    </div>
+   </div>
   </div>
-
-<div class="col-sm-9" style="margin-left: 220px">
-
-<% lokalizacje.forEach((lokalizacja) => { %>
-<div class="container-fluid" ><h3><%= lokalizacja %></span></h3>
-  <table class="table table-hover" id=<%= lokalizacja %>>
-     <thead class="thead-inverse">
-     <tr>
-       <th>Sklep</th>
-       <th>Adres</th>
-       <th>Telefony</th>
-       <th>Kierownik</th>
-       <th>Koordynator</th>
-     </tr>
-     </thead>
-     <% telefony.filter((tab) => { return tab['Lokalizacja'] == lokalizacja; }).forEach((el) => { %>
-     <tbody>
-        <td><%= el['Sklep'] %></td>
-        <td><%= el['Adres'] %></td>
-        <td>
-          <% el['Telefony'].forEach((tel) => { %>
-            <%= tel %><br>
-          <% }) %>
-        </td>
-        <td><%= el['Kierownik'] %></td>
-        <td><%= el['Koordynator'] %></td>
-        <% if (mod['mod'] === true) { %>
-          <td>
-            <a href="/modsklep/<%= el['Kierownik'] %>">Popraw</a>
-          </td>
-        <% } %>
-     </tbody>
-     <% }) %>
-    </table>
- </div>
- <% }) %>
- </div>
- </div>
- </div>
-  <footer class="page-footer container-fluid text-center">
-    <p>Copyright by Karabasz Software</p>
-  </footer>
-     <script type="text/javascript" src="/js/js_in.js"></script>
+  <% include footer %>
+  <script type="text/javascript" src="/js/js_in.js"></script>
   </body>
 </html>
