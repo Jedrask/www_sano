@@ -39,6 +39,11 @@
         </td>
         <td><%= el['Kierownik'] %></td>
         <td><%= el['Koordynator'] %></td>
+        <% if (mod['mod'] === true) { %>
+          <td>
+            <a href="/modsklep/<%= el['Kierownik'] %>">Popraw</a>
+          </td>
+        <% } %>
      </tbody>
      <% }) %>
     </table>

@@ -31,8 +31,10 @@ app.get('/', uri, (req, res) => {
 
 app.get('/telefonySklepy', czytajPlik(sklepy, 'Lokalizacja'), (req, res) => {
 
+  let mod = {mod: false };
+
   if (req.slownik) {
-    res.render('tel_sklepy', { telefony: req.telefony, lokalizacje: req.slownik });
+    res.render('tel_sklepy', { telefony: req.telefony, lokalizacje: req.slownik, mod });
   } else {
      res.send(req.telefony);
   };
@@ -149,9 +151,42 @@ app.post('/telBiuroAdd', czytajPlik(biuro), (req, res) => {
   });
 });
 
+
+app.get('/modsklepy', czytajPlik(sklepy, 'Lokalizacja'), (req, res) => {
+
+  let mod = {mod: true };
+
+  if (req.slownik) {
+    res.render('tel_sklepy', { telefony: req.telefony, lokalizacje: req.slownik, mod });
+  } else {
+     res.send(req.telefony);
+  };
+});
+
+
+app.get('/modsklep/:name', czytajPlik(sklepy), (req, res) => {
+
+  let index = req.telefony.findIndex(x => x['Kierownik'] === req.params.name  );
+  let dane = req.telefony[index];
+  res.render('telSklepForm', { dane, route: index } );
+});
+
+app.post('/modsklep/:id', czytajPlik(sklepy), (req, res) => {
+
+  req.telefony[req.params.id]['Kierownik'] = req.body['kierownik'];
+  delete req.body.index;
+  let save = JSON.stringify(req.telefony);
+  fs.writeFile(__dirname + '/data/' + sklepy, save, (err) => {
+    if (!err) {
+      res.redirect('/modsklepy');
+    } else {
+      res.send('change not saved!');
+    }
+  });
+});
+
 // Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
 function pobierzSlownik(telefony, wartosc) {
-  let tmp = '';
   let slownik = new Set();
   for (let el of telefony) {
     if (!slownik.has(el[wartosc])) {
@@ -175,7 +210,7 @@ function parsujPlik(data) {
 
 };
 
-//Middlware do czytania plikow z telefonami oraz budowania słownika wg lokalizacji lub działu
+//Middlware do czytania plikow z telefonami oraz budowania słownika wg lokalizacji lub działu, dane są dodane do req
 function czytajPlik(plik, parametr) {
 
     return function(req, res, next) {
