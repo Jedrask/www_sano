@@ -1,6 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const Koszalin = new Set([1,2,3,4,5,6,7,8,14,20,36,38,38]);
+const Bydgoszcz = new Set([25,26,27,28,29,30,31,32,33]);
+const Kolobrzeg = new Set([12,13,24]);
 
 // Pobiera dane słownikowe potrzebne w czasie generowania strony HTML
 function pobierzSlownik(telefony, wartosc) {
@@ -51,4 +54,37 @@ function czytajPlik(plik, parametr) {
    };
 };
 
-module.exports = { czytajPlik };
+// Middlware do określania skąd przychodzi request: Biuro, Sklepy, VPN - w celu wyświetlania tylko tego co jest potrzebne
+// pliki w dokumentach oraz pogody dla roznych miast.
+function fromWhere(req, res, next) {
+
+  const ip = req.ip.substr(7).split('\.');
+   switch(parseInt(ip[0])) {
+     case 192:
+          req.biuro = true;
+          break;
+     case 172:
+          if (ip[2] === '0') {
+            req.biuro = true;
+            req.miasto = 'Koszalin';
+            break;
+          };
+          if (Koszalin.has(parseInt(ip[2]))) {
+            req.miasto = 'Koszalin';
+            break;
+          };
+
+          if (Bydgoszcz.has(parseInt(ip[2]))) {
+            req.miasto = 'Bydgoszcz';
+            break;
+          };
+          break;
+     default:
+          req.miasto = 'Koszalin';
+   };
+   next();
+};
+
+module.exports = { czytajPlik,
+                   fromWhere
+};
