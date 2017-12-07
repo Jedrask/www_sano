@@ -6,8 +6,7 @@ const jwt = require('./source/auth');
 const { uri } = require('./source/pogoda');
 const { request } = require('./source/request');
 
-const { czytajPlik } = require('./source/middlware');
-const { fromWhere } = require('./source/middlware');
+const { czytajPlik, fromWhere } = require('./source/middlware');
 
 const sklepy = 'telefony_sklepy.json';
 const biuro = 'telefony_biuro.json'
@@ -27,9 +26,9 @@ app.set('view engine', 'ejs');
 
 app.get('/', fromWhere, uri, (req, res) => {
    request(req.uri).then((data) => {
-     res.render('index', { pogoda: JSON.parse(data) });
+     res.render('index', { pogoda: JSON.parse(data), miasto: req.miasto });
    }, (e) => {
-     res.render('index', { pogoda: 'Chwilowy brak pogody' });
+     res.render('index', { pogoda: 'Chwilowy brak pogody', miasto: req.miasto });
    });
 });
 

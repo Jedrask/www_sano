@@ -7,7 +7,7 @@
      <% include menu %>
      <div class="container" >
         <div class="jumbotron">
-          <h1>Pogoda w Koszalinie</h1><br>
+          <h1>Pogoda - <%=miasto %></h1><br>
           <p><%= pogoda.currently.summary %>, 
              temperatura <%= Math.round(pogoda.currently.temperature) %>&degC.,
              temperatura odczuwalna <%= Math.round(pogoda.currently.apparentTemperature) %>&degC.,
