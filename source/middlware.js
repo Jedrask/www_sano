@@ -79,7 +79,7 @@ function fromWhere(req, res, next) {
           break;
      case 172:
           if (ip[2] === '0') {
-            req.biuro = true;
+            req.biuro = 'VPN';
             req.miasto = 'Koszalin';
             break;
           };
