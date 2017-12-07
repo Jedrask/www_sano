@@ -7,8 +7,8 @@
      <% include menu %>
      <div class="container" >
         <div class="jumbotron">
-          <h1>Pogoda w Koszalinie</h1><br>
-          <p>Obecnie: <%= pogoda.currently.summary %>, 
+          <h1>Pogoda - <%=miasto %></h1><br>
+          <p><%= pogoda.currently.summary %>, 
              temperatura <%= Math.round(pogoda.currently.temperature) %>&degC.,
              temperatura odczuwalna <%= Math.round(pogoda.currently.apparentTemperature) %>&degC.,
              ciśnienie <%= pogoda.currently.pressure %> [hPa],
@@ -16,8 +16,8 @@
              w porywach do <%= pogoda.currently.windGust %> [m/s],
              wilgotność powietrza <%= pogoda.currently.humidity * 100 %> %
           </p>
-          <p>Jutro: <%= pogoda.hourly.summary %></p>
-          <p>Najbliższe dni: <%= pogoda.daily.summary %></p>
+          <p><%= pogoda.hourly.summary %></p>
+          <p><%= pogoda.daily.summary %></p>
           <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
         </div>
      </div>

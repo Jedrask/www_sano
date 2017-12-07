@@ -5,7 +5,8 @@ const bodyParser = require('body-parser');
 const jwt = require('./source/auth');
 const { uri } = require('./source/pogoda');
 const { request } = require('./source/request');
-const { czytajPlik } = require('./source/middlware');
+
+const { czytajPlik, fromWhere } = require('./source/middlware');
 
 const sklepy = 'telefony_sklepy.json';
 const biuro = 'telefony_biuro.json'
@@ -23,11 +24,11 @@ app.use(bodyParser.urlencoded( { extended: true } ));
 
 app.set('view engine', 'ejs');
 
-app.get('/', uri, (req, res) => {
+app.get('/', fromWhere, uri, (req, res) => {
    request(req.uri).then((data) => {
-     res.render('index', { pogoda: JSON.parse(data) });
+     res.render('index', { pogoda: JSON.parse(data), miasto: req.miasto });
    }, (e) => {
-     res.render('index', { pogoda: 'Chwilowy brak pogody' });
+     res.render('index', { pogoda: 'Chwilowy brak pogody', miasto: req.miasto });
    });
 });
 
@@ -57,7 +58,7 @@ app.get('/dokumenty', (req, res) => {
 });
 
 // Wyświetlamlistę dokumentów do pobrania w zależności od kategorii dokumentu jaka zostanie wybrana
-app.get('/dokumenty/:id', (req, res) => {
+app.get('/dokumenty/:id', fromWhere, (req, res) => {
 
   let path = req.params.id;
   fs.readdir(__dirname + '/public/dokumenty/' + path + '/', (err, files) => {
