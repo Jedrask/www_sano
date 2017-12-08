@@ -76,6 +76,7 @@ function fromWhere(req, res, next) {
    switch(parseInt(ip[0])) {
      case 192:
           req.biuro = true;
+          req.miasto = 'Koszalin';
           break;
      case 172:
           if (ip[2] === '0') {
