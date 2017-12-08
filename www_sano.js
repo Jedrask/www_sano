@@ -70,6 +70,10 @@ app.get('/dokumenty/:id', fromWhere, (req, res) => {
   });
 });
 
+app.get('/strony', fromWhere, (req,res) => {
+  res.render('linkiDoStron', {biuro: req.biuro });
+});
+
 // routing dla wyświetlenie strony z linkami do POPRAW | USUŃ
 app.get('/modbiuro', czytajPlik(biuro, 'Dział'), (req, res) => {
 
