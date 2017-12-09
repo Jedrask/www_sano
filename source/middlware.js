@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const Koszalin = new Set([1,2,3,4,5,6,7,8,14,20,36,38,38]);
+const Koszalin = new Set([1,2,3,4,5,6,7,8,14,20,36,38,39]);
 const Bydgoszcz = new Set([25,26,27,28,29,30,31,32,33]);
 const Kolobrzeg = new Set([12,13,24]);
 const Szczecinek = new Set([15,18]);
