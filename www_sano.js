@@ -65,7 +65,7 @@ app.get('/dokumenty/:id', fromWhere, (req, res) => {
     if (err) {
       res.status(400).send('Problem z odczytaniem listy plików');
     } else {
-      res.render('dokumenty', { files, path });
+      res.render('dokumenty', { files: files.sort(), path });
     }
   });
 });

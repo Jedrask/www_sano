@@ -8,10 +8,19 @@
    <div class="container">
      <div class="jumbotron">
        <% if (biuro !== 'VPN') { %>
-         <a href="http://192.168.1.9/CentralReports" target="_blank">Strona Centrali</a>
+       <a href="http://192.168.1.9/CentralReports" target="_blank">Strona Centrali</a><br>
+       <a href="http://192.168.1.12/otrs/index.pl" target="_blank">Strona OTRS - agent</a><br>
+       <a href="http://192.168.1.12/otrs/customer.pl" target="_blank">Strona OTRS - klient</a><br>
+       <a href="http://192.168.1.50/qlikview/index.htm" target="_blank">Strona QlikView</a>
        <% } else { %>
-         <a href="http://172.27.0.1/CentralReports" target="_blank">Strona Centrali</a>
+       <a href="http://172.27.0.1/CentralReports" target="_blank">Strona Centrali</a><br>
+       <a href="http://172.27.0.22/otrs/index.pl" target="_blank">Strona OTRS - agent</a><br>
+       <a href="http://172.27.0.22/otrs/customer.pl" target="_blank">Strona OTRS - klient</a><br>
+       <a href="http://172.27.0.14/qlikview/index.htm" target="_blank">Strona QlikView</a>
        <% } %>
+       <br>
+       <a href="http://dokuwiki.biurotechnika.pl/doku.php" target="_blank">Biurotechnika Dokuwiki</a><br>
+       <a href="http://biurotechnika.pl/magnat" target="_blank">Biurotechnika strony serwisowe Magnata</a><br>
      </div>
    </div>
    <% include footer %>
