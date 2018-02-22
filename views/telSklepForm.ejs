@@ -12,8 +12,13 @@
      <% include menu %>
      <div class="container" >
         <div class="jumbotron">
-          <form action="<%= route %>" method="post"><h3>Zmiana Kierownika</h3><br>
+          <form action="<%= route %>" method="post"><h3>Zmiana danych <%= dane['Sklep'] %></h3><br>
+            Kierownik<br>
             <input type="text" name="kierownik" value="<%= dane['Kierownik'] %>"><br><br>
+            Telefony<br>
+            <% dane['Telefony'].forEach((tel) => { %>
+              <input type="text" name="<%= dane['Telefony'].indexOf(tel) %>" value="<%= tel %>"><br>
+            <% }) %>
             <input type="submit" value="Zatwierdź">
           </form>
        </div>

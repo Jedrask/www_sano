@@ -185,17 +185,25 @@ app.get('/modsklepy', czytajPlik(sklepy, 'Lokalizacja'), (req, res) => {
 });
 
 
-app.get('/modsklep/:name', czytajPlik(sklepy), (req, res) => {
+app.get('/modsklep/:sklep', czytajPlik(sklepy), (req, res) => {
 
-  let index = req.telefony.findIndex(x => x['Kierownik'] === req.params.name  );
+  let index = req.telefony.findIndex(x => x['Sklep'] === req.params.sklep  );
   let dane = req.telefony[index];
   res.render('telSklepForm', { dane, route: index } );
 });
 
 app.post('/modsklep/:id', czytajPlik(sklepy), (req, res) => {
 
+  // metoda values zwraca nam wartosci obiektu body w tablicy
+  let noweTelefony = Object.values(req.body);
+
+  // metoda pop() usuwa ostatni element i zostaje nam tablica samych telefonow
+  noweTelefony.pop();
+
   req.telefony[req.params.id]['Kierownik'] = req.body['kierownik'];
-  delete req.body.index;
+  req.telefony[req.params.id]['Telefony'] = noweTelefony;
+
+
   let save = JSON.stringify(req.telefony);
   fs.writeFile(__dirname + '/data/' + sklepy, save, (err) => {
     if (!err) {
