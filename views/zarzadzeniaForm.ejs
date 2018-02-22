@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pl">
+     <head>
+     <% include head %>
+     <style>
+       input[type=text] {width: 400px;}
+       table { width: 600px; }
+       td { padding-bottom: 20px; }
+     </style>
+     </head>
+     <body>
+     <% include menu %>
+     <div class="container" >
+        <div class="jumbotron">
+          <form action="<%= route %>" method="post" enctype="multipart/form-data">
+            <table>
+              <tr><td><input type="text" style="display:none" name="index"></td></tr>
+              <tr>
+                <td>Wybierz plik:</td>
+                <td><input type="file" name="avatar" multiple /></td>
+              </tr>
+              <tr>
+                <td>Numer:</td>
+                <td><input type="text" name="Numer"></td>
+              </tr>
+              <tr>
+                <td>Opis:</td>
+                <td><input type="text" name="Opis"></td>
+              </tr>
+              <tr>
+                <td>Data:</td>
+                <td><input type="text" name="Data" value="<%= new Date %>"></td>
+              </tr>
+              <tr>
+                <td>Osoba odpowiedzialna:</td>
+                <td><input type="text" name="Osoba odpowiedzialna"></td>
+              </tr>
+              <tr>
+                <td>Uwagi:</td>
+                <td><input type="text" name="Uwagi"></td>
+              </tr>
+              <tr>
+                <td>Telefon komórkowy:</td>
+                <td><input type="text" name="Tel. Komórkowy"></td>
+              </tr>
+              <tr>
+                <td>Adres email:</td>
+                <td><input type="text" name="Adres e-mail"></td>
+              </tr>
+            </table><br>
+            <input type="submit" value="Zatwierdź">
+          </form>
+        </div>
+     </div>
+     <script type="text/javascript" src="js/js_in.js"></script>
+     <% include footer %>
+     </body>
+</html>

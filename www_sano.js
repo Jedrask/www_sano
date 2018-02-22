@@ -1,6 +1,20 @@
 const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+          cb(null, 'public/zarzadzenia')
+        },
+    filename: function (req, file, cb) {
+          cb(null, file.originalname)
+        }
+})
+ 
+var upload = multer({ storage: storage })
+
+// var upload = multer({ dest: 'public/zarzadzenia/' })
 
 const jwt = require('./source/auth');
 const { uri } = require('./source/pogoda');
@@ -192,5 +206,23 @@ app.post('/modsklep/:id', czytajPlik(sklepy), (req, res) => {
   });
 });
 
+app.get('/zarzadzenia', (req, res) => {
+   res.send('Zarządzenia');
+});
+
+app.get('/addzarzadzenia', (req, res) => {
+   res.render('zarzadzeniaForm', {route: 'test'});
+});
+
+app.post('/test', upload.single('avatar'), (req, res) => {
+  if (!req.file) {
+    res.send('Brak wybranego pliku!!');
+  } else {
+    let dane = {};
+    dane.plik = req.file.originalname;
+    dane.header = req.body;
+    res.send(dane);
+  }
+});
 
 app.listen(3000);
