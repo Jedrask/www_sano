@@ -28,6 +28,8 @@ const biuro = 'telefony_biuro.json'
 const app = express();
 const compression = require('compression');
 
+const { getSql } = require('./source/kontrakty');
+
 app.disable('x-powered-by');
 
 app.use(compression());
@@ -212,6 +214,24 @@ app.post('/modsklep/:id', czytajPlik(sklepy), (req, res) => {
       res.send('change not saved!');
     }
   });
+});
+
+app.get('/kontrakty', (req, res) => {
+
+  getSql().then((values) => {
+     let msg ='<table>';
+     for (let row of values.rows) {
+       msg += `<tr><td>${row.dostawca}</td><td>${row.wartosc} PLN</td></tr>`;
+     }
+     msg += '</table>';
+     console.log('skonczylem');
+     res.send(msg);
+   //  closeConnection();
+  }).catch((e) => {
+   console.log(e);
+   //closeConnection();
+   });
+
 });
 
 app.get('/zarzadzenia', (req, res) => {
